@@ -12,5 +12,8 @@ module.exports={
             use: ["ts-loader"],
             exclude: /node-modules/
         }]
-    }
+    },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js'],
+    },
 }

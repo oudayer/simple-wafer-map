@@ -1,9 +1,9 @@
 const path = require("path")
-module.exports={
+module.exports = {
     mode: "production",
     entry: "./index.ts",
     output: {
-        path: path.resolve(__dirname,'../dist'),
+        path: path.resolve(__dirname, '../dist'),
         filename: "bundle.js",
 
     },
@@ -13,5 +13,9 @@ module.exports={
             use: ["ts-loader"],
             exclude: /node-modules/
         }]
-    }
+    },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js'],
+    },
+
 }
