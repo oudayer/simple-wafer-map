@@ -1,4 +1,4 @@
-import {WaferMapOption} from "./model";
+import {WaferMapInitOpts, WaferMapOption} from "./types";
 
 export class WaferMap {
     dom: HTMLElement;
@@ -9,6 +9,32 @@ export class WaferMap {
         this.dom = dom;
         this.id = id;
     }
+    setOption<Opt extends WaferMapInitOpts>(opts: Opt): void {
 
+    }
+
+    draw(): void {
+
+    }
+
+    clear(): void {
+
+    }
+
+    reset(): void {
+
+    }
+
+
+    clip() {
+
+    }
+
+    select() {
+    }
+
+    clickDie() {
+
+    }
 
 }
