@@ -1,7 +1,17 @@
-import {WaferMap} from "./waferMap";
+import WaferMap from "./waferMap";
+import {WaferMapOption} from "./types";
 
-let wafer: WaferMap
 
-wafer.id = 1
-console.log(wafer)
-exports = wafer
+
+console.log("main")
+
+
+export function init(dom: HTMLElement, opts?: WaferMapOption) {
+
+    const chart=new WaferMap(dom,opts)
+    console.log(chart)
+}
+
+export function life() {
+
+}

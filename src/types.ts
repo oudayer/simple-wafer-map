@@ -1,18 +1,21 @@
 export type WaferMapOption = {
-    notch?: 'down' | 'left' | 'up' | 'right';
-    mapData?: Array<Array<DieOptions<simpleDieAttributes>>> | Array<DieOptions<simpleDieAttributes>>
+    notch?: NotchPosition,
+    width: number,
+    height: number,
+    draggable?: boolean, // 拖拽
+    mapData?: Array<Array<simpleDieAttributes>> | Array<DieOptions<simpleDieAttributes>>
 }
 
 export interface DieOptions<T> {
     x: number,
     y: number,
-    value?: string,
+    value?: string | number,
     attributes?: T
 }
 
 export interface simpleDieAttributes {
     name?: string,
-    value?: string,
+    value: string | number,
     description?: string,
     [propname: string]: any,
 }

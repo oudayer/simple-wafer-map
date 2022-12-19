@@ -6,9 +6,14 @@
 
 </head>
 <body>
+<div id="demo1" style="height: 100px;width: 200px"></div>
+<script type="text/javascript" src="../node_modules/zrender/dist/zrender.js"></script>
 <script src="../dist/bundle.js"></script>
 <script>
-    console.log(wafer)
+    wafer.init(document.querySelector('#demo1'),{
+        width:100,
+        height:100
+    })
 </script>
 
 </body>
