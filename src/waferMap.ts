@@ -1,5 +1,7 @@
-import {WaferMapInitOpts, WaferMapOption} from "./types";
+import {DieOption, WaferMapInitOpts, WaferMapOption, WaferShapeData} from "./types";
 import zrender from './zrRegister'
+import {mapHumbnail, mapTransform} from "./utils";
+import {mapcolor} from "./color";
 
 class WaferMap {
 
@@ -8,15 +10,19 @@ class WaferMap {
     private reticleLayer: zrender.Group
     dom: HTMLElement;
     id: number;
-
+    mapData: Array<WaferShapeData>
+    dieWidth:number
+    dieHeight:number
     constructor(dom: HTMLElement, opts?: WaferMapOption) {
         opts = opts || {
             width: 100,
             height: 100
         };
         this.dom = dom;
+        this.mapData = mapTransform(opts.mapData)
         const notch = opts.notch || 'down'
-
+        this.dieWidth = opts.width / (opts.mapData[0].length)
+        this.dieHeight = opts.height / opts.mapData.length
         const zr = this._zr = zrender.init(dom, {
             width: opts.width,
             height: opts.height,
@@ -25,18 +31,12 @@ class WaferMap {
 
         const dieMap = this.dieLayer = new zrender.Group({
             draggable: opts.draggable || false,
-            originX: opts.width / 2,
-            originY: opts.height / 2,
+            originX: 0,
+            originY: 0,
             rotation: Notch[notch] / 180 * Math.PI,
         })
 
-        const reticleMap = this.reticleLayer = new zrender.Group({
-            draggable: opts.draggable || false,
-            originX: opts.width / 2,
-            originY: opts.height / 2,
-        })
-        zr.add(dieMap);
-        zr.add(reticleMap)
+
     }
 
     setOption<Opt extends WaferMapInitOpts>(opts: Opt): void {
@@ -44,14 +44,22 @@ class WaferMap {
     }
 
     draw(): void {
-
+        this.updateColor()
+        this.dieLayer.add(new mapHumbnail({
+            shape: {
+                dieWidth:  this.dieWidth ,
+                dieHeight: this.dieHeight ,
+                mapData: this.mapData
+            }
+        }))
+        this._zr.add(this.dieLayer)
     }
 
     setScale() {
 
     }
 
-    update(){
+    update() {
 
     }
 
@@ -87,6 +95,11 @@ class WaferMap {
 
     }
 
+    updateColor() {
+        this.mapData.forEach(item => {
+            //  item.color
+        })
+    }
 }
 
 export default WaferMap

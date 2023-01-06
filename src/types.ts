@@ -3,7 +3,9 @@ export type WaferMapOption = {
     width: number,
     height: number,
     draggable?: boolean, // 拖拽
-    mapData?: Array<Array<simpleDieAttributes>> | Array<DieOptions<simpleDieAttributes>>
+    // mapData?: Array<Array<simpleDieAttributes>> | Array<DieOptions<simpleDieAttributes>> | number[][]
+    mapData?: number[][]
+
 }
 
 export interface DieOptions<T> {
@@ -17,14 +19,15 @@ export interface simpleDieAttributes {
     name?: string,
     value: string | number,
     description?: string,
+
     [propname: string]: any,
 }
 
 
-export type DieOption<T> = {
+export type DieOption = {
     x: number,
     y: number,
-    option?: T | null
+    value?: string | number,
 }
 
 export type Bin<T> = {
@@ -60,4 +63,12 @@ export type GridMask = {
     y: number,
     width: number,
     height: number
+}
+
+export type WaferShapeData = DieOption & { color: string }
+
+export class WaferShapes {
+    dieWidth = 0;
+    dieHeight = 0;
+    mapData: Array<WaferShapeData>
 }
