@@ -2,7 +2,8 @@ import zrender from './zrRegister'
 import {WaferShapeData, WaferShapes} from "./types";
 import PathProxy from "zrender/lib/core/PathProxy";
 import {mapcolor} from "./color";
-
+import {from} from 'rxjs'
+import {map,mergeAll} from "rxjs/operators";
 
 export function getContainer<T>(selector: T) {
 
@@ -24,7 +25,7 @@ export function mapTransform(mapData: number[][]): Array<WaferShapeData> {
     mapData.forEach((line, index) => {
         line.forEach((item, i) => {
             let color = numZeroPadding(item, 3)
-            if(item!==0){
+            if (item !== 0) {
                 result.push({
                     x: i,
                     y: index,
@@ -38,21 +39,49 @@ export function mapTransform(mapData: number[][]): Array<WaferShapeData> {
     return result
 }
 
-export const mapHumbnail = zrender.Path.extend<WaferShapes>({
+export const HumbnailMap = zrender.Path.extend<WaferShapes>({
     type: 'waferMap',
     shape: new WaferShapes(),
     buildPath(ctx: PathProxy, shape: WaferShapes) {
         let mapData = shape.mapData || []
-        let width = shape.dieWidth
-        let height = shape.dieHeight
+        let w = shape.dieWidth
+        let h = shape.dieHeight
         const ctxM = ctx.getContext()
         mapData.forEach(item => {
             ctx.beginPath()
             ctxM.fillStyle = item.color
-            ctx.rect(item.x * width, item.y * height, width, height)
+            ctx.rect(item.x * w, item.y * h, w, h)
             ctx.fill(ctxM)
             ctx.stroke(ctxM)
         })
 
     }
 })
+
+export function normalMap(shape: WaferShapes) {
+   return from(shape.mapData).pipe(
+        map(item => {
+            let rect = new zrender.Rect({
+                shape: {
+                    x: shape.dieWidth * item.x,
+                    y: shape.dieHeight * item.y,
+                    width: shape.dieWidth,
+                    height: shape.dieHeight
+                },
+                style: {
+                    fill: item.color,
+                    stroke:'1'
+                },
+
+            }).on('click', () => {
+               // this.selectDieEmit.emit(item.value)
+            })
+            return rect
+        }),
+    )
+
+
+}
+
+
+

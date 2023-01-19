@@ -1,6 +1,6 @@
 import {DieOption, WaferMapInitOpts, WaferMapOption, WaferShapeData} from "./types";
 import zrender from './zrRegister'
-import {mapHumbnail, mapTransform} from "./utils";
+import {HumbnailMap, mapTransform, normalMap} from "./utils";
 import {mapcolor} from "./color";
 
 class WaferMap {
@@ -11,8 +11,9 @@ class WaferMap {
     dom: HTMLElement;
     id: number;
     mapData: Array<WaferShapeData>
-    dieWidth:number
-    dieHeight:number
+    dieWidth: number
+    dieHeight: number
+
     constructor(dom: HTMLElement, opts?: WaferMapOption) {
         opts = opts || {
             width: 100,
@@ -45,13 +46,21 @@ class WaferMap {
 
     draw(): void {
         this.updateColor()
-        this.dieLayer.add(new mapHumbnail({
+        /*this.dieLayer.add(new HumbnailMap({
             shape: {
                 dieWidth:  this.dieWidth ,
                 dieHeight: this.dieHeight ,
                 mapData: this.mapData
             }
-        }))
+        }))*/
+
+        normalMap({
+            dieWidth: this.dieWidth,
+            dieHeight: this.dieHeight,
+            mapData: this.mapData
+        }).subscribe(rect=>{
+            this.dieLayer.add(rect)
+        })
         this._zr.add(this.dieLayer)
     }
 
