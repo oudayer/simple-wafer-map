@@ -11,12 +11,16 @@
 <script src="mapData.js"></script>
 <script src="../dist/bundle.js"></script>
 <script>
-    wafer.init(document.querySelector('#demo1'),{
-        width:500,
-        height:500,
-        draggable:true,
-        mapData:mapList
+    wafer.init(document.querySelector('#demo1'), {
+        width: 500,
+        height: 500,
+        draggable: true,
+        isThumbnail: false,
+        notch:'down',
+        mapData: mapList,
+        colorList:[{'024':'black'},{'001':'blue'}]
     }).draw()
+        .setScale(1)
 </script>
 
 </body>

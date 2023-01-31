@@ -39,7 +39,7 @@ export function mapTransform(mapData: number[][]): Array<WaferShapeData> {
     return result
 }
 
-export const HumbnailMap = zrender.Path.extend<WaferShapes>({
+export const ThumbnailMap = zrender.Path.extend<WaferShapes>({
     type: 'waferMap',
     shape: new WaferShapes(),
     buildPath(ctx: PathProxy, shape: WaferShapes) {
@@ -74,7 +74,8 @@ export function normalMap(shape: WaferShapes) {
                 },
 
             }).on('click', () => {
-               // this.selectDieEmit.emit(item.value)
+                //this.selectDieEmit.emit(item.value)
+                console.log(item.value)
             })
             return rect
         }),

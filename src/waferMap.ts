@@ -1,9 +1,11 @@
-import {DieOption, WaferMapInitOpts, WaferMapOption, WaferShapeData} from "./types";
+import {WaferMapInitOpts, WaferMapOption, WaferShapeData} from "./types";
 import zrender from './zrRegister'
-import {HumbnailMap, mapTransform, normalMap} from "./utils";
-import {mapcolor} from "./color";
+import {ThumbnailMap, mapTransform, normalMap} from "./utils";
 
 class WaferMap {
+    //todo update color
+    // event listener
+    // overwrite
 
     private _zr: zrender.ZRenderType;
     private dieLayer: zrender.Group
@@ -13,6 +15,8 @@ class WaferMap {
     mapData: Array<WaferShapeData>
     dieWidth: number
     dieHeight: number
+    isThumbnail = true
+    colorList = new Map()
 
     constructor(dom: HTMLElement, opts?: WaferMapOption) {
         opts = opts || {
@@ -21,9 +25,19 @@ class WaferMap {
         };
         this.dom = dom;
         this.mapData = mapTransform(opts.mapData)
+        this.isThumbnail = opts.isThumbnail === undefined ? true : opts.isThumbnail
         const notch = opts.notch || 'down'
         this.dieWidth = opts.width / (opts.mapData[0].length)
         this.dieHeight = opts.height / opts.mapData.length
+
+        if (opts.colorList) {
+            this.colorList.clear()
+            opts.colorList.forEach(item => {
+                const name=Object.keys(item)[0]
+                this.colorList.set(name, item[name])
+            })
+            console.log(opts.colorList,this.colorList)
+        }
         const zr = this._zr = zrender.init(dom, {
             width: opts.width,
             height: opts.height,
@@ -32,8 +46,8 @@ class WaferMap {
 
         const dieMap = this.dieLayer = new zrender.Group({
             draggable: opts.draggable || false,
-            originX: 0,
-            originY: 0,
+            originX: opts.width / 2,
+            originY: opts.height / 2,
             rotation: Notch[notch] / 180 * Math.PI,
         })
 
@@ -44,28 +58,37 @@ class WaferMap {
 
     }
 
-    draw(): void {
+    draw() {
         this.updateColor()
-        /*this.dieLayer.add(new HumbnailMap({
-            shape: {
-                dieWidth:  this.dieWidth ,
-                dieHeight: this.dieHeight ,
-                mapData: this.mapData
-            }
-        }))*/
 
-        normalMap({
-            dieWidth: this.dieWidth,
-            dieHeight: this.dieHeight,
-            mapData: this.mapData
-        }).subscribe(rect=>{
-            this.dieLayer.add(rect)
-        })
+        if (this.isThumbnail) {
+            this.dieLayer.draggable = false
+            this.dieLayer.add(new ThumbnailMap({
+                shape: {
+                    dieWidth: this.dieWidth,
+                    dieHeight: this.dieHeight,
+                    mapData: this.mapData
+                }
+            }))
+        } else {
+            normalMap({
+                dieWidth: this.dieWidth,
+                dieHeight: this.dieHeight,
+                mapData: this.mapData
+            }).subscribe(rect => {
+                this.dieLayer.add(rect)
+            })
+        }
+
         this._zr.add(this.dieLayer)
+        return this
     }
 
-    setScale() {
-
+    setScale(scale: number) {
+        this.dieLayer.attr({
+            scaleX: scale,
+            scaleY: scale
+        })
     }
 
     update() {
@@ -77,6 +100,7 @@ class WaferMap {
             console.warn('Instance ' + id + ' has been disposed');
             return;
         }*/
+        this._zr.dispose()
         this.setOption({});
     }
 
@@ -96,18 +120,15 @@ class WaferMap {
 
     }
 
-    zoomIn() {
 
-    }
-
-    zoomOut() {
-
-    }
 
     updateColor() {
-        this.mapData.forEach(item => {
-            //  item.color
-        })
+        if (this.colorList.size > 0) {
+            this.mapData.forEach(item => {
+                if(this.colorList.has(item.value))item.color=this.colorList.get(item.value)
+            })
+        }
+
     }
 }
 

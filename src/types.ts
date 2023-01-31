@@ -1,8 +1,10 @@
 export type WaferMapOption = {
     notch?: NotchPosition,
+    isThumbnail?: boolean,
     width: number,
     height: number,
     draggable?: boolean, // 拖拽
+    colorList?: Array<Color>,
     // mapData?: Array<Array<simpleDieAttributes>> | Array<DieOptions<simpleDieAttributes>> | number[][]
     mapData?: number[][]
 
@@ -63,6 +65,9 @@ export type GridMask = {
     y: number,
     width: number,
     height: number
+}
+type Color = {
+    [propName: string]: string | number
 }
 
 export type WaferShapeData = DieOption & { color: string }
