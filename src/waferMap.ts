@@ -1,4 +1,4 @@
-import {WaferMapInitOpts, WaferMapOption, WaferShapeData} from "./types";
+import {Reticle, WaferMapInitOpts, WaferMapOption, WaferShapeData} from "./types";
 import zrender from './zrRegister'
 import {ThumbnailMap, mapTransform, normalMap} from "./utils";
 
@@ -15,10 +15,14 @@ class WaferMap {
     mapData: Array<WaferShapeData>
     dieWidth: number
     dieHeight: number
+    mapWidth:number
+    mapHeight:number
     isThumbnail = true
     colorList = new Map()
 
     constructor(dom: HTMLElement, opts?: WaferMapOption) {
+        // 初始化参数
+        const notch = opts.notch || 'down'
         opts = opts || {
             width: 100,
             height: 100
@@ -26,7 +30,8 @@ class WaferMap {
         this.dom = dom;
         this.mapData = mapTransform(opts.mapData)
         this.isThumbnail = opts.isThumbnail === undefined ? true : opts.isThumbnail
-        const notch = opts.notch || 'down'
+        this.mapWidth=opts.width
+        this.mapHeight=opts.height
         this.dieWidth = opts.width / (opts.mapData[0].length)
         this.dieHeight = opts.height / opts.mapData.length
 
@@ -36,15 +41,14 @@ class WaferMap {
                 const name=Object.keys(item)[0]
                 this.colorList.set(name, item[name])
             })
-            console.log(opts.colorList,this.colorList)
         }
-        const zr = this._zr = zrender.init(dom, {
+        this._zr = zrender.init(dom, {
             width: opts.width,
             height: opts.height,
             renderer: 'canvas'
         });
 
-        const dieMap = this.dieLayer = new zrender.Group({
+         this.dieLayer = new zrender.Group({
             draggable: opts.draggable || false,
             originX: opts.width / 2,
             originY: opts.height / 2,
@@ -89,6 +93,8 @@ class WaferMap {
             scaleX: scale,
             scaleY: scale
         })
+        return this
+
     }
 
     update() {
@@ -96,12 +102,15 @@ class WaferMap {
     }
 
     clear(): void {
-        /*if (this._disposed) {
-            console.warn('Instance ' + id + ' has been disposed');
-            return;
-        }*/
         this._zr.dispose()
         this.setOption({});
+    }
+
+    rotate(rotation:number){
+        this.dieLayer.attr({
+            rotation: rotation,
+        })
+        return this
     }
 
     reset(): void {
@@ -109,12 +118,11 @@ class WaferMap {
     }
 
 
-    clip() {
-
+    clip(path:zrender.Path) {
+        this.dieLayer.setClipPath(path)
     }
 
-    select() {
-    }
+
 
     clickDie() {
 
@@ -130,6 +138,35 @@ class WaferMap {
         }
 
     }
+
+     drawReticleFunc(reticle:Array<number>) {
+        const shot_x = reticle[0]
+        const shot_y = reticle[1]
+        const shot_ref_x = reticle[2]
+        const shot_ref_y = reticle[3]
+         const x0 = shot_ref_x % shot_x - shot_x
+         const y0 = shot_ref_y % shot_y - shot_y
+
+         for (let i = x0; i < this.mapWidth / this.dieWidth; i += shot_x) {
+             for (let j = y0; j < this.mapHeight / this.dieHeight; j += shot_y) {
+                 this.dieLayer.add(new zrender.Rect({
+                     shape: {
+                         x: this.dieWidth * i,
+                         y: this.dieHeight * j,
+                         width: shot_x * this.dieWidth,
+                         height: shot_y * this.dieHeight
+                     },
+                     style: {
+                         fill: 'rgba(0, 0, 0, 0)',
+                         stroke: '#000FFF'
+                     }
+                 }))
+             }
+         }
+             this.dieLayer.dirty()
+         }
+
+
 }
 
 export default WaferMap

@@ -1,13 +1,11 @@
 import zrender from './zrRegister'
-import {WaferShapeData, WaferShapes} from "./types";
+import {Reticle, WaferShapeData, WaferShapes} from "./types";
 import PathProxy from "zrender/lib/core/PathProxy";
 import {mapcolor} from "./color";
 import {from} from 'rxjs'
-import {map,mergeAll} from "rxjs/operators";
+import {map} from "rxjs/operators";
 
-export function getContainer<T>(selector: T) {
 
-}
 
 export function numZeroPadding(num: number, len: number): string {
     if (String(num).length > len) {
@@ -83,6 +81,8 @@ export function normalMap(shape: WaferShapes) {
 
 
 }
+
+
 
 
 

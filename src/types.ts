@@ -51,12 +51,8 @@ export type WaferMapInitOpts = {
     colorMap?: Array<string>,
 };
 
-export type WaferMapBasicOptions = {
-    zoom?: boolean,
-    drag?: boolean,
-    notch?: NotchPosition,
-    reticle?: Reticle
-}
+
+
 
 export type NotchPosition = 'left' | 'down' | 'right' | 'up'
 
@@ -67,7 +63,7 @@ export type GridMask = {
     height: number
 }
 type Color = {
-    [propName: string]: string | number
+    [propName: string]: string
 }
 
 export type WaferShapeData = DieOption & { color: string }
