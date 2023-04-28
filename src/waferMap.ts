@@ -22,10 +22,10 @@ class WaferMap {
 
     constructor(dom: HTMLElement, opts?: WaferMapOption) {
         // 初始化参数
-        const notch = opts.notch || 'down'
         opts = opts || {
             width: 100,
-            height: 100
+            height: 100,
+            mapData:[]
         };
         this.dom = dom;
         this.mapData = mapTransform(opts.mapData)
@@ -52,7 +52,7 @@ class WaferMap {
             draggable: opts.draggable || false,
             originX: opts.width / 2,
             originY: opts.height / 2,
-            rotation: Notch[notch] / 180 * Math.PI,
+            rotation:opts.notch? Notch[opts.notch] / 180 * Math.PI :Notch.down / 180 * Math.PI,
         })
 
 
@@ -79,7 +79,7 @@ class WaferMap {
                 dieWidth: this.dieWidth,
                 dieHeight: this.dieHeight,
                 mapData: this.mapData
-            }).subscribe(rect => {
+            }).subscribe((rect:any) => {
                 this.dieLayer.add(rect)
             })
         }
