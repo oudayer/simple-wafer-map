@@ -6,7 +6,7 @@ export type WaferMapOption = {
     draggable?: boolean, // 拖拽
     colorList?: Array<Color>,
     // mapData?: Array<Array<simpleDieAttributes>> | Array<DieOptions<simpleDieAttributes>> | number[][]
-    mapData?: number[][]
+    mapData: number[][]
 
 }
 
